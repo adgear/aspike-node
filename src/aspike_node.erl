@@ -11,6 +11,7 @@
   start/2,
   stop/1,
   put/5,
+  binary_put/5,
   async_put/5,
   get/4,
   get/5,
@@ -89,6 +90,10 @@ stop(Node_id) ->
     aspike:key_digest(), aspike:bins()) ->
   ok | {error, aspike:status()}.
 put(Node_id, Namespace, Set, Key_digest, Bins) ->
+  call(Node_id, {put, {Namespace, Set, Key_digest, Bins}}).
+
+-spec binary_put(atom(), binary(), binary(), binary(), [{binary(), binary()}]) -> ok | {error, aspike:status()}.
+binary_put(Node_id, Namespace, Set, Key_digest, Bins) ->
   call(Node_id, {put, {Namespace, Set, Key_digest, Bins}}).
 
 -spec async_put(aspike:node_id(), aspike:namespace(), aspike:set(),
