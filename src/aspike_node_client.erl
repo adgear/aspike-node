@@ -53,6 +53,11 @@ handle_request({put, {Namespace, Set, Key_digest, Bins}} = _Request, #state{requ
   Pkt = aspike_protocol:enc_put_request(Namespace, Set, Key_digest, Bins),
   {ok, Request_id, Pkt, State#state {requests = Counter + 1}};
 
+handle_request({put, {Namespace, Set, Key_digest, Bins, TTL}} = _Request, #state{requests = Counter} = State) ->
+  Request_id = request_id(Counter),
+  Pkt = aspike_protocol:enc_put_request(Namespace, Set, Key_digest, Bins, TTL),
+  {ok, Request_id, Pkt, State#state {requests = Counter + 1}};
+
 handle_request({get, {Namespace, Set, Key_digest}} = _Request, #state{requests = Counter} = State) ->
   Request_id = request_id(Counter),
   Pkt = aspike_protocol:enc_get_request(Namespace, Set, Key_digest, []),
