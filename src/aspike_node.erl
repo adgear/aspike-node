@@ -11,7 +11,11 @@
   start/2,
   stop/1,
   put/5,
+  binary_put/5,
+  binary_put/6,
   async_put/5,
+  binary_get/4,
+  binary_get/5,
   get/4,
   get/5,
   async_get/4,
@@ -91,6 +95,14 @@ stop(Node_id) ->
 put(Node_id, Namespace, Set, Key_digest, Bins) ->
   call(Node_id, {put, {Namespace, Set, Key_digest, Bins}}).
 
+-spec binary_put(atom(), binary(), binary(), binary(), [{binary(), binary()}]) -> ok | {error, aspike:status()}.
+binary_put(Node_id, Namespace, Set, Key_digest, Bins) ->
+    binary_put(Node_id, Namespace, Set, Key_digest, Bins, 0).
+
+-spec binary_put(atom(), binary(), binary(), binary(), [{binary(), binary()}], integer()) -> ok | {error, aspike:status()}.
+binary_put(Node_id, Namespace, Set, Key_digest, Bins, TTL) ->
+  call(Node_id, {put, {Namespace, Set, Key_digest, Bins, TTL}}).
+
 -spec async_put(aspike:node_id(), aspike:namespace(), aspike:set(),
     aspike:key_digest(), aspike:bins()) -> {put, aspike:response_id()} | {error, atom()}.
 async_put(Node_id, Namespace, Set, Key_digest, Bins) ->
@@ -101,6 +113,16 @@ async_put(Node_id, Namespace, Set, Key_digest, Bins) ->
   {ok, aspike:bins()} | {error, record_not_found | aspike:status()}.
 get(Node_id, Namespace, Set, Key_digest) ->
   call(Node_id, {get, {Namespace, Set, Key_digest}}).
+
+-spec binary_get(atom(), binary(), binary(), binary()) -> 
+  {ok, aspike:bins()} | {error, record_not_found | aspike:status()}.
+binary_get(Node_id, Namespace, Set, Key_digest) ->
+  call(Node_id, {get, {Namespace, Set, Key_digest}}).
+
+-spec binary_get(atom(), binary(), binary(), binary(), list()) -> 
+  {ok, aspike:bins()} | {error, record_not_found | aspike:status()}.
+binary_get(Node_id, Namespace, Set, Key_digest, Bins) ->
+  call(Node_id, {get, {Namespace, Set, Key_digest, Bins}}).
 
 -spec get(aspike:node_id(), aspike:namespace(), aspike:set(),
     aspike:key_digest(), aspike:bins()) ->
